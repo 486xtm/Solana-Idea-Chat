@@ -1,24 +1,18 @@
-import { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
-import {
-  WalletModalProvider,
-  WalletMultiButton,
-} from "@solana/wallet-adapter-react-ui";
 import { useNavigate } from "react-router-dom";
-// import { ArrowIcon, PhantomIcon } from "./Icons";
-
-import("@solana/wallet-adapter-react-ui/styles.css");
-
 export const SolanaConnect: React.FC = () => {
   const navigate = useNavigate();
-  const { publicKey, connect } = useWallet();
+  const { publicKey, connect,wallet, disconnect,connected } = useWallet();
+  const { setVisible } = useWalletModal();
 
-  useEffect(() => {
-    if (publicKey) {
-      navigate("/chat");
-    }
-  }, [publicKey, navigate]);
-
+  // useEffect(() => {
+  //   if (publicKey) {
+  //     navigate("/chat");
+  //   }
+  // }, [publicKey, navigate]);
+  
   const handleConnect = async () => {
     try {
       await connect();
@@ -31,20 +25,32 @@ export const SolanaConnect: React.FC = () => {
     }
   };
 
+  
+
+  const handleClick = useCallback(async () => {
+    if (wallet) {
+      await connect().catch(() => {
+        // Handle errors if any
+      });
+      navigate("/chat");
+    } else {
+      setVisible(true);
+    }
+  }, [wallet, connect, setVisible]);
+
   return (
-    <WalletModalProvider>
-      <WalletMultiButton
-        
-        onClick={handleConnect}
-      >
-        {/* <div className="flex items-center w-full gap-[10px] lg:gap-[20px] xl:gap-[25px] 2xl:gap-[30px]">
-          <PhantomIcon />
-          <p className="uppercase font-jbm text-[15px] lg:text-[24px]">
-            connect your wallet
-          </p>
-          <ArrowIcon />
-        </div> */}
-      </WalletMultiButton>
-    </WalletModalProvider>
+    <div>
+      {/* {connected ? (
+        <button onClick={disconnect}>Disconnect</button>
+      ) : ( */}
+        <button
+          className="bg-white coming-soon-shadow text-[#0000FF] uppercase font-jbm text-[15px] lg:text-[24px] p-2 lg:p-4 w-[90%] mx-auto mt-5 sm:w-full"
+          onClick={handleClick}
+        >
+          Connect N GO RETARD
+        </button>
+        <button onClick={disconnect}>Disconnect</button>
+      {/* )} */}
+    </div>
   );
 };

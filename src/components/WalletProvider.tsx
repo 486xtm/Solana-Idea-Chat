@@ -1,24 +1,24 @@
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from '@solana/wallet-adapter-react';
+import React from 'react';
+import { WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
-import { FC } from 'react';
 
+import('@solana/wallet-adapter-react-ui/styles.css');
 type Props = {
   readonly children: React.ReactNode;
 };
 
-const endpoint = clusterApiUrl('mainnet-beta');
-
-const wallets = [new PhantomWalletAdapter()];
 
 export const SolanaWalletProvider: FC<Props> = ({ children }) => {
+  const network = clusterApiUrl('mainnet-beta'); // You can change this to 'devnet' or 'testnet'
+  const wallets = [new PhantomWalletAdapter()];
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect={true}>
+    <ConnectionProvider endpoint={network}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
         {children}
+        </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
